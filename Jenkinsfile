@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment{
+        PROD_IP:'3-111-57-20' 
+
+    }
     stages {
         stage('checkout SCM') {
             steps {
@@ -25,7 +29,6 @@ pipeline {
             steps {
                 echo "Waiting for the container to start..."
                 sh "sleep 10s"
-                sh "docker "
 
             }
         }
@@ -39,9 +42,10 @@ pipeline {
         stage('Release to prod') {
             steps {
                 echo 'copying compose to prod'
-                sh "scp -i /solomon_rgt.pem /docker-compose.yml ubuntu@ec2-13-232-226-169.ap-south-1.compute.amazonaws.com:~/."
+                sh "scp -i /solomon_rgt.pem /docker-compose.yml ubuntu@ec2-${PROD_IP}.ap-south-1.compute.amazonaws.com:~/."
+                echo 'ssh to prod and run docker compose'
                 sh """
-                        ssh -t -o StrictHostKeyChecking=no -i /solomon_rgt.pem ubuntu@ec2-13-232-226-169.ap-south-1.compute.amazonaws.com << 'EOF'
+                        ssh -t -o StrictHostKeyChecking=no -i /solomon_rgt.pem ubuntu@ec2-${PROD_IP}.ap-south-1.compute.amazonaws.com << 'EOF'
 						aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.ap-south-1.amazonaws.com
 						docker compose up -d
 						<< 'EOF'
@@ -52,6 +56,10 @@ pipeline {
  post {
         always {
             echo 'Cleanup after everything!'
+            sh " docker stop cowsay-${BUILD_NUMBER} "
+            sh " docker rm cowsay-${BUILD_NUMBER} "
+            sh " docker rm cowsay-lastest"
+            sh " docker rmi -f cowsay-${BUILD_NUMBER} "
         }
     }
 }
