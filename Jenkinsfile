@@ -25,12 +25,15 @@ pipeline {
             steps {
                 echo "Waiting for the container to start..."
                 sh "sleep 10s"
+                sh "docker "
 
             }
         }
-        stage('Regression tests') {
+        stage('Publish') {
             steps {
-                sh 'echo Running E2E tests'
+                sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.ap-south-1.amazonaws.com"
+                sh "docker tag cowsay:latest 644435390668.dkr.ecr.ap-south-1.amazonaws.com/solomon:latest"
+                sh "docker push 644435390668.dkr.ecr.ap-south-1.amazonaws.com/solomon:latest"
             }
         }
         stage('Release to prod') {
