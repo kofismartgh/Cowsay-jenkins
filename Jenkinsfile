@@ -56,7 +56,7 @@ pipeline {
         always {
             echo 'Cleanup after everything!'
             sh " docker stop cowsay-${BUILD_NUMBER} "
-            sh " docker rm cowsay-${BUILD_NUMBER} "
+            sh " docker rm -f cowsay-${BUILD_NUMBER} "
             sh " docker rm cowsay-lastest"
             sh " docker rmi -f cowsay-${BUILD_NUMBER} "
         }
