@@ -19,7 +19,7 @@ pipeline {
             steps {
                 echo "Running container" 
                 script {
-                    def existing_containers = sh 'docker ps -aq -f name=cowsay-', returnStatus: true.trim()
+                    def existing_containers = sh (docker ps -aq -f name=cowsay-, returnStatus: true).trim()
                     if (existing_containers) {
                         echo "Stopping and removing existing cowsay"
                         sh "docker stop ${existing_containers}"
