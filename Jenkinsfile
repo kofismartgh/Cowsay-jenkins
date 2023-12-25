@@ -1,8 +1,7 @@
 pipeline {
     agent any
     environment{
-        PROD_IP:'3-111-57-20' 
-
+        PROD_IP= '3-111-57-20' 
     }
     stages {
         stage('checkout SCM') {
