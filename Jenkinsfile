@@ -38,7 +38,15 @@ pipeline {
         }
         stage('Release to prod') {
             steps {
-                sh 'echo Releasing to prod'
+                echo 'copying compose to prod'
+                sh "scp -i solomon_rgt.pem docker-compose.yml ubuntu@ec2-13-232-226-169.ap-south-1.compute.amazonaws.com:~/."
+                sh """
+                        ssh -o StrictHostKeyChecking=no -i solomon_rgt.pem ubuntu@ec2-13-232-226-169.ap-south-1.compute.amazonaws.com << 'EOF'
+						aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.ap-south-1.amazonaws.com
+						docker compose up -d
+						
+						EOF
+                    """
             }
         }
     }
