@@ -39,6 +39,8 @@ pipeline {
                         echo "Curl request successful: Container is up and running."
                     } else {
                         echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: ${curl_response}"
+                        echo "DEBUG: Printing curl command output for further investigation."
+                        sh "curl -s -o - http://${host_ip}:9000"
                         error "Container health check failed."
                     }
                 }
