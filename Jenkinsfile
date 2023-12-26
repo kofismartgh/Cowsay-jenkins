@@ -42,17 +42,26 @@ pipeline {
                 sh "docker run -d --name cowsay-${BUILD_NUMBER} -p9000:8080 cowsay:${BUILD_NUMBER}"
             }
         }
+        stage ('curl check'){
+            script{
+                 env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
+                 echo "Curl response code: ${CURL_RESP}" 
+                 echo "HOST_IP: ${HOST_IP}"
+            }
+
+
+        }
         stage('health_check') {
             steps {
                 echo "Waiting for the container to start..."
                 sh "sleep 10s"
-                sh """
-                        sh /home/hostip.sh
-                    """
+                //sh """
+                  //      sh /home/hostip.sh
+                  //  """
                 echo "Performing a curl request to the running container.to ${HOST_IP} AND ${CURL_RESP}.."
                 script {
 
-                   // env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
+                    //env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
                     
                     echo "Curl response code: ${CURL_RESP}"
                     echo "HOST_IP: ${HOST_IP}"
