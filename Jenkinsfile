@@ -48,7 +48,9 @@ pipeline {
                 sh "sleep 10s"
                 echo "Performing a curl request to the running container..."
                 script {
-                    env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
+
+                   // env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
+                    sh '/hostip.sh'
                     echo "Curl response code: ${CURL_RESP}"
                     echo "HOST_IP: ${HOST_IP}"
                     echo "CURL_RESP: ${CURL_RESP}"
