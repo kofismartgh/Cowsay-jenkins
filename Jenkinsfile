@@ -16,6 +16,9 @@ pipeline {
 
                     env.HOST_IP = HOST_IP
                     env.CURL_RESP = CURL_RESP.toString()
+                    echo "HOST_IP: ${HOST_IP}"
+                    echo "CURL_RESP: ${CURL_RESP}"
+
                 }
             }
         }
