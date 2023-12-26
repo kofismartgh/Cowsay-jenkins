@@ -44,12 +44,12 @@ pipeline {
                 sh "scp -i /solomon_rgt.pem /docker-compose.yml ubuntu@ec2-${PROD_IP}.ap-south-1.compute.amazonaws.com:~/."
                 echo 'ssh to prod and run docker compose'
                 sh """
-                    ssh -t -o StrictHostKeyChecking=no -i /solomon_rgt.pem ubuntu@ec2-${PROD_IP}.ap-south-1.compute.amazonaws.com << 'EOF'
+                        ssh -t -o StrictHostKeyChecking=no -i /solomon_rgt.pem ubuntu@ec2-${PROD_IP}.ap-south-1.compute.amazonaws.com << 'EOF'
 						aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.ap-south-1.amazonaws.com
 						docker compose down -v
                         docker compose up -d
-			EOF
-                """
+						<< 'EOF'
+                    """
             }
         }
     }
@@ -59,7 +59,6 @@ pipeline {
             sh " docker stop cowsay-${BUILD_NUMBER} "
             sh " docker rm -f cowsay-${BUILD_NUMBER} "
             sh 'docker images --format "{{.Repository}}:{{.Tag}}" | grep "cowsay" | xargs docker rmi'
-            echo 'cleanup done'
         }
     }
 }
