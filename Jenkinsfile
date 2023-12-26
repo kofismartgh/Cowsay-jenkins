@@ -1,7 +1,8 @@
 pipeline {
     agent any
     environment{
-        PROD_IP= '3-111-57-20' 
+        PROD_IP= '3-111-57-20'
+        CURL_RESP= '200'
     }
     stages {
         stage('checkout SCM') {
@@ -30,20 +31,16 @@ pipeline {
                 sh "sleep 10s"
                 echo "Performing a curl request to the running container..."
                 script {
-                    def host_ip = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
-                    def curl_response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${host_ip}:9000", returnStatus: true).trim().toInteger()
-
-                    echo "Curl response code: ${curl_response}"
+                    echo "Curl response code: ${CURL_RESP}"
                     sh """
-                        if [ "${curl_response} -eq 200 ]
-                        then
+                        if [ "${CURL_RESP} -eq 200 ]; then
                             echo "Curl request successful: Container is up and running."
                         else
-                            echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: $curl_response"
+                            echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: ${CURL_RESP}"
                             exit 1
                         fi
                     """
-                    echo "DONE"
+                echo "DONE"
                 }
             }
         }
