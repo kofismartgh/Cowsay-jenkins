@@ -46,11 +46,14 @@ pipeline {
             steps {
                 echo "Waiting for the container to start..."
                 sh "sleep 10s"
+                sh """
+                        sh /home/hostip.sh
+                    """
                 echo "Performing a curl request to the running container..."
                 script {
 
                    // env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
-                    sh '/home/hostip.sh'
+                    
                     echo "Curl response code: ${CURL_RESP}"
                     echo "HOST_IP: ${HOST_IP}"
                     echo "CURL_RESP: ${CURL_RESP}"
