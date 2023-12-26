@@ -3,6 +3,8 @@ pipeline {
     environment{
         PROD_IP= '3-111-57-20'
         //CURL_RESP= '200'
+        HOST_IP = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
+        CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
     }
     stages {
         stage('checkout SCM') {
@@ -31,9 +33,6 @@ pipeline {
                 sh "sleep 10s"
                 echo "Performing a curl request to the running container..."
                 script {
-                    def HOST_IP = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
-                    def CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
-
                     echo "Curl response code: ${CURL_RESP}"
                     sh """
                         if [ ${CURL_RESP} -eq 200 ]; then
