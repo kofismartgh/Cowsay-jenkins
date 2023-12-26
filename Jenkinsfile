@@ -67,6 +67,17 @@ pipeline {
                     """
             }
         }
+        stage('E2E test'){
+            steps{
+                echo "testing prod up"
+                sh ("""
+                    until curl --include 3.111.57.20:9000 | head -n 1 | grep '200 OK'
+                    do 
+                        sleep 1
+                    done
+                """)
+            }
+        }
     }
  post {
         always {
@@ -74,6 +85,7 @@ pipeline {
             sh " docker stop cowsay-${BUILD_NUMBER} "
             sh " docker rm -f cowsay-${BUILD_NUMBER} "
             sh 'docker images --format "{{.Repository}}:{{.Tag}}" | grep "cowsay" | xargs docker rmi'
+            emailext body: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:', subject: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!', to: 'kofismart19@gmail.com'
         }
     }
 }
