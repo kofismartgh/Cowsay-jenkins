@@ -7,21 +7,6 @@ pipeline {
         //CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
     }
     stages {
-        stage('Initialize Environment') {
-            steps {
-                script {
-                   
-                    HOST_IP = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
-                    CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
-
-                    env.HOST_IP = HOST_IP
-                    env.CURL_RESP = CURL_RESP.toString()
-                    echo "HOST_IP: ${HOST_IP}"
-                    echo "CURL_RESP: ${CURL_RESP}"
-
-                }
-            }
-        }
         stage('checkout SCM') {
             steps {
                 checkout scm: scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'gitlab_ssh', url: 'git@gitlab.com:kofi2454651/Cowsay.git']])
@@ -48,6 +33,13 @@ pipeline {
                 sh "sleep 10s"
                 echo "Performing a curl request to the running container..."
                 script {
+                    HOST_IP = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
+                    CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
+
+                    env.HOST_IP = HOST_IP
+                    env.CURL_RESP = CURL_RESP.toString()
+                    echo "HOST_IP: ${HOST_IP}"
+                    echo "CURL_RESP: ${CURL_RESP}"
                     echo "Curl response code: ${CURL_RESP}"
                     echo "HOST_IP: ${HOST_IP}"
                     echo "CURL_RESP: ${CURL_RESP}"
