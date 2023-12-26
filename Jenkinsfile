@@ -44,12 +44,13 @@ pipeline {
         }
         stage ('curl check'){
             steps{
+                sh "sleep 5s"
                 sh 'curl --version'
                script{
                  env.CURL_RESP = sh(script: "curl -s -w '\\n%{response_code}'-u http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
-                echo "Curl response code: ${CURL_RESP}" 
-                  echo "here si sthe $CURL_RESP"
-                   echo "HOST_IP: ${HOST_IP}"
+                    echo "Curl response code: ${CURL_RESP}" 
+                    echo "here si sthe $CURL_RESP"
+                    echo "HOST_IP: ${HOST_IP}"
                }
             }
         }
