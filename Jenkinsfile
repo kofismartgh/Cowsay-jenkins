@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment{
         PROD_IP= '3-111-57-20'
-        //CURL_RESP= '200'
+        CURL_RESP= '200'
         HOST_IP = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
         //CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
     }
@@ -44,11 +44,12 @@ pipeline {
         }
         stage ('curl check'){
             steps{
-                script{
-                    env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
-                    echo "Curl response code: ${CURL_RESP}" 
-                    echo "HOST_IP: ${HOST_IP}"
-                }
+                sh 'curl --version'
+                //script{
+                   // env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
+                   // echo "Curl response code: ${CURL_RESP}" 
+                   // echo "HOST_IP: ${HOST_IP}"
+               // }
             }
         }
         stage('health_check') {
