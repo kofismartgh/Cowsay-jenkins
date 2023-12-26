@@ -56,11 +56,11 @@ pipeline {
         stage('health_check') {
             steps {
                 echo "Waiting for the container to start..."
-                sh "sleep 10s"
+                sh "sleep 5s"
                 //sh """
                   //      sh /home/hostip.sh
                   //  """
-                echo "Performing a curl request to the running container.to ${HOST_IP} AND ${CURL_RESP}.."
+                //echo "Performing a curl request to the running container.to ${HOST_IP} AND ${CURL_RESP}.."
                 script {
 
                     //env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
