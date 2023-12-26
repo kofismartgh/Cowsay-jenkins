@@ -45,12 +45,12 @@ pipeline {
         stage ('curl check'){
             steps{
                 sh 'curl --version'
-                script{
-                   env.CURL_RESP = sh(script: "curl -s -w '\\n%{response_code}'-u http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
-                   echo "Curl response code: ${CURL_RESP}" 
-                   echo "here si sthe $CURL_RESP"
+               // script{
+                 //  env.CURL_RESP = sh(script: "curl -s -w '\\n%{response_code}'-u http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
+                //echo "Curl response code: ${CURL_RESP}" 
+                  // echo "here si sthe $CURL_RESP"
                    // echo "HOST_IP: ${HOST_IP}"
-                }
+               // }
             }
         }
         stage('health_check') {
@@ -70,6 +70,13 @@ pipeline {
                     echo "CURL_RESP: ${CURL_RESP}"
 
                     sh """
+
+                        sh /home/hostip.sh
+                        echo "Curl response code: ${CURL_RESP}" 
+                        echo "here si sthe $CURL_RESP"
+                        echo "Performing a curl request to the running container.to ${HOST_IP} AND ${CURL_RESP}.."
+
+
                         if [ ${CURL_RESP} -eq 200 ]; then
                             echo "Curl request successful: Container is up and running."
                         else
