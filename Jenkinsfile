@@ -58,7 +58,7 @@ pipeline {
             echo 'Cleanup after everything!'
             sh " docker stop cowsay-${BUILD_NUMBER} "
             sh " docker rm -f cowsay-${BUILD_NUMBER} "
-            sh " docker rm cowsay-latest"
+            sh " docker images --format "{{.Repository}}:{{.Tag}}" | grep "cowsay" | xargs docker rmi"
         }
     }
 }
