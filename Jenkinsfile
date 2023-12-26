@@ -49,7 +49,7 @@ pipeline {
                 sh """
                         sh /home/hostip.sh
                     """
-                echo "Performing a curl request to the running container..."
+                echo "Performing a curl request to the running container.to ${HOST_IP} AND ${CURL_RESP}.."
                 script {
 
                    // env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStatus: true).trim().toInteger()
