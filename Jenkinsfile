@@ -34,15 +34,15 @@ pipeline {
                     def curl_response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${host_ip}:9000", returnStatus: true).trim().toInteger()
 
                     echo "Curl response code: ${curl_response}"
-
-                    if (curl_response == 200) {
-                        echo "Curl request successful: Container is up and running."
-                    } else {
-                        echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: ${curl_response}"
-                        echo "DEBUG: Printing curl command output for further investigation."
-                        sh "curl -s -o - http://${host_ip}:9000"
-                        error "Container health check failed."
-                    }
+                    sh """
+                        if [ "$curl_response" -eq 200 ]
+                        then
+                            echo "Curl request successful: Container is up and running."
+                        else
+                            echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: $curl_response"
+                            exit 1
+                        fi
+                    """
                 }
             }
         }
