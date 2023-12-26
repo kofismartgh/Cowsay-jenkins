@@ -28,9 +28,20 @@ pipeline {
             steps {
                 echo "Waiting for the container to start..."
                 sh "sleep 10s"
+                echo "Performing a curl request to the running container..."
+                script {
+                    def host_ip = sh(script: "ip route | awk 'NR==1 {print \$3}'", returnStdout: true).trim()
+                    def curl_response = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${host_ip}:9000", returnStatus: true).trim().toInteger()
 
-            }
-        }
+                    echo "Curl response code: ${curl_response}"
+
+                    if (curl_response == 200) {
+                        echo "Curl request successful: Container is up and running."
+                    } else {
+                        echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: ${curl_response}"
+                        error "Container health check failed."
+                    }
+                }
         stage('Publish') {
             steps {
                 sh "aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 644435390668.dkr.ecr.ap-south-1.amazonaws.com"
