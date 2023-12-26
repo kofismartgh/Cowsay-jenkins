@@ -35,7 +35,7 @@ pipeline {
 
                     echo "Curl response code: ${curl_response}"
                     sh """
-                        if [ "$curl_response" -eq 200 ]
+                        if [ "${curl_response} -eq 200 ]
                         then
                             echo "Curl request successful: Container is up and running."
                         else
@@ -43,6 +43,7 @@ pipeline {
                             exit 1
                         fi
                     """
+                    echo "DONE"
                 }
             }
         }
