@@ -43,13 +43,13 @@ pipeline {
             }
         }
         stage ('curl check'){
-            script{
-                 env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
-                 echo "Curl response code: ${CURL_RESP}" 
-                 echo "HOST_IP: ${HOST_IP}"
+            steps{
+                script{
+                    env.CURL_RESP = sh(script: "curl -s -o /dev/null -w \"%{http_code}\" http://${HOST_IP}:9000", returnStdout: true).trim().toInteger()
+                    echo "Curl response code: ${CURL_RESP}" 
+                    echo "HOST_IP: ${HOST_IP}"
+                }
             }
-
-
         }
         stage('health_check') {
             steps {
