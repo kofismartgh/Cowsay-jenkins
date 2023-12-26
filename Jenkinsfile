@@ -33,7 +33,7 @@ pipeline {
                 script {
                     echo "Curl response code: ${CURL_RESP}"
                     sh """
-                        if [ "${CURL_RESP} -eq 200 ]; then
+                        if [ ${CURL_RESP} -eq 200 ]; then
                             echo "Curl request successful: Container is up and running."
                         else
                             echo "Curl request failed: Container might not be ready or is not responding correctly. HTTP status: ${CURL_RESP}"
